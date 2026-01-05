@@ -226,6 +226,36 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (record->event.pressed) {
+#ifdef CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_ENABLE
+        if (auto_pointer_layer_timer != 0) {
+            bool is_mouse_key = false;
+            switch (keycode) {
+                case KC_BTN1 ... KC_BTN5:
+                case KC_WH_U:
+                case KC_WH_D:
+                case KC_WH_L:
+                case KC_WH_R:
+                case DRGSCRL:
+                case SNIPING:
+                case DPI_MOD:
+                case S_D_MOD:
+                    is_mouse_key = true;
+                    break;
+            }
+
+            if (!is_mouse_key) {
+                auto_pointer_layer_timer = 0;
+                layer_off(LAYER_POINTER);
+#    ifdef RGB_MATRIX_ENABLE
+                rgb_matrix_mode_noeeprom(RGB_MATRIX_DEFAULT_MODE);
+#    endif // RGB_MATRIX_ENABLE
+                return false;
+            } else {
+                auto_pointer_layer_timer = timer_read();
+            }
+        }
+#endif // CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_ENABLE
+
         if (osl_fnc_active) {
             cleanup_fnc_layer = true;
             osl_fnc_active = false;
