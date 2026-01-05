@@ -186,28 +186,28 @@ combo_t key_combos[COMBO_LENGTH] = {
     XXXXXXX, KC_QUOT, KC_LBRC, KC_RBRC, KC_PIPE,          KC_BSLS, KC_7, KC_8, KC_9, KC_PLUS, \
     KC_TAB,  XXXXXXX, KC_LCBR, KC_RCBR, XXXXXXX,          KC_EQL,  KC_4, KC_5, KC_6, KC_0,    \
     KC_GRV,  XXXXXXX, MT(MOD_LALT, KC_LPRN), MT(MOD_LGUI, KC_RPRN), KC_PIPE, KC_UNDS, KC_1, KC_2, KC_3, KC_MINS, \
-             XXXXXXX, KC_BSPC, SFT_BSP,               SFT_BSP, _______ 
+             XXXXXXX, KC_BSPC, SFT_BSP,               SFT_BSP, _______
 
 // LAYER_SYMB_SHIFT (ZMK layer_3)
 #define LAYOUT_LAYER_SYMB_SHIFT \
     XXXXXXX, KC_DQT,  KC_LBRC, KC_RBRC, KC_PIPE,          KC_BSLS,    KC_AMPR, KC_ASTR, KC_LPRN, KC_PLUS, \
     KC_TAB,  XXXXXXX, KC_LCBR, KC_RCBR, XXXXXXX,          KC_EQL,     KC_DLR,  KC_PERC, KC_CIRC, KC_QUOT, \
     KC_TILD, XXXXXXX, KC_LPRN, KC_RPRN, KC_PIPE,          KC_UNDS,    KC_EXLM, LSFT(KC_2), KC_HASH, KC_MINS, \
-             XXXXXXX, LALT(KC_BSPC), LSFT(LALT(KC_BSPC)),          LSFT(LALT(KC_BSPC)), _______ 
+             XXXXXXX, LALT(KC_BSPC), LSFT(LALT(KC_BSPC)),          LSFT(LALT(KC_BSPC)), _______
 
 // LAYER_FNC (ZMK layer_4)
 #define LAYOUT_LAYER_FNC \
     XXXXXXX, KC_F7, KC_F8, KC_F9, KC_F10,          XXXXXXX, KC_AMPR, KC_ASTR, KC_LPRN, KC_PLUS, \
     KC_TAB,  KC_F4, KC_F5, KC_F6, KC_F11,          KC_EQL,  KC_DLR,  KC_PERC, KC_CIRC, KC_QUOT, \
     XXXXXXX, KC_F1, KC_F2, KC_F3, KC_F12,          KC_BSLS, KC_EXLM, KC_AT,   KC_HASH, KC_MINS, \
-             XXXXXXX, _______, SFT_LRET,           SFT_LRET, LSFT(KC_ENT) 
+             XXXXXXX, _______, SFT_LRET,           SFT_LRET, LSFT(KC_ENT)
 
 // LAYER_POINTER (Existing)
 #define LAYOUT_LAYER_POINTER_CUSTOM \
-    QK_BOOT,  EE_CLR, XXXXXXX, DPI_MOD, S_D_MOD, S_D_MOD, DPI_MOD, XXXXXXX,  EE_CLR, QK_BOOT, \
-    ______________HOME_ROW_GACS_L______________, ______________HOME_ROW_GACS_R______________, \
-    _______, DRGSCRL, SNIPING, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, SNIPING, DRGSCRL, _______, \
-                      XXXXXXX, KC_BTN2, KC_BTN1, KC_BTN3, KC_BTN1
+    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
+    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
+    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
+                      DRGSCRL, KC_BTN2, KC_BTN1, KC_BTN3, KC_BTN1
 
 // Need to keep the convenience macros for POINTER layer to work or redefine them
 #define ______________HOME_ROW_GACS_L______________ KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX
@@ -249,7 +249,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #    ifdef RGB_MATRIX_ENABLE
                 rgb_matrix_mode_noeeprom(RGB_MATRIX_DEFAULT_MODE);
 #    endif // RGB_MATRIX_ENABLE
-                return false;
+                return true;
             } else {
                 auto_pointer_layer_timer = timer_read();
             }
