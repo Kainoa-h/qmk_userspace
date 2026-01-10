@@ -164,6 +164,14 @@ combo_t key_combos[COMBO_LENGTH] = {
   [LS_DEL_COMBO] = COMBO(ls_combo, LCTL(KC_BSPC)),
 };
 
+// Disable combos on game layer
+bool combo_should_trigger(uint16_t combo_index, combo_t *combo, uint16_t keycode, keyrecord_t *record) {
+    if (IS_LAYER_ON(LAYER_GAME)) {
+        return false;
+    }
+    return true;
+}
+
 // LAYER_BASE (ZMK layer0)
 // Q  W  E  R  T     Y  U  I  O  P
 // A  S  D  F  G     H  J  K  L  ;
