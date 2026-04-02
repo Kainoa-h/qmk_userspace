@@ -55,7 +55,8 @@ static uint16_t auto_pointer_layer_timer = 0;
 // Custom definitions
 enum {
     TD_L_THUMB = 0,
-    TD_R_THUMB
+    TD_R_THUMB,
+    TD_PTR_L_THUMB,
 };
 
 // Forward declare callbacks
@@ -63,6 +64,8 @@ void td_l_thumb_finished(tap_dance_state_t *state, void *user_data);
 void td_l_thumb_reset(tap_dance_state_t *state, void *user_data);
 void td_r_thumb_finished(tap_dance_state_t *state, void *user_data);
 void td_r_thumb_reset(tap_dance_state_t *state, void *user_data);
+void td_ptr_l_thumb_finished(tap_dance_state_t *state, void *user_data);
+void td_ptr_l_thumb_reset(tap_dance_state_t *state, void *user_data);
 
 // Tap Dance Definitions
 
@@ -73,6 +76,7 @@ typedef struct {
 
 static td_thumb_state_t td_l_state = { .is_held = false };
 static td_thumb_state_t td_r_state = { .is_held = false };
+static td_thumb_state_t td_ptr_l_state = { .is_held = false };
 
 // Manual OSL State
 static bool osl_fnc_active = false;
@@ -120,14 +124,38 @@ void td_r_thumb_reset(tap_dance_state_t *state, void *user_data) {
     }
 }
 
+void td_ptr_l_thumb_finished(tap_dance_state_t *state, void *user_data) {
+    td_ptr_l_state.is_held = false;
+    if (state->count == 1) {
+        if (state->pressed || state->interrupted) { // hold or another key pressed
+            layer_off(LAYER_POINTER);
+            layer_on(LAYER_AUX);
+            td_ptr_l_state.is_held = true;
+        } else { // tap
+            register_code(KC_BTN2);
+        }
+    }
+}
+
+void td_ptr_l_thumb_reset(tap_dance_state_t *state, void *user_data) {
+    if (td_ptr_l_state.is_held) {
+        layer_off(LAYER_AUX);
+        td_ptr_l_state.is_held = false;
+    } else {
+        unregister_code(KC_BTN2);
+    }
+}
+
 tap_dance_action_t tap_dance_actions[] = {
-    [TD_L_THUMB] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_l_thumb_finished, td_l_thumb_reset),
-    [TD_R_THUMB] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_r_thumb_finished, td_r_thumb_reset)
+    [TD_L_THUMB]     = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_l_thumb_finished, td_l_thumb_reset),
+    [TD_R_THUMB]     = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_r_thumb_finished, td_r_thumb_reset),
+    [TD_PTR_L_THUMB] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_ptr_l_thumb_finished, td_ptr_l_thumb_reset),
 };
 
 // Update Thumb Definitions
-#define LMT_AUX  TD(TD_L_THUMB)
-#define RMT_SYMB TD(TD_R_THUMB)
+#define LMT_AUX     TD(TD_L_THUMB)
+#define RMT_SYMB    TD(TD_R_THUMB)
+#define PTR_L_THUMB TD(TD_PTR_L_THUMB)
 
 // Helpers for readability
 #define _L_PTR(KC) LT(LAYER_POINTER, KC)
@@ -223,7 +251,7 @@ bool combo_should_trigger(uint16_t combo_index, combo_t *combo, uint16_t keycode
     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
-                      DRGSCRL, KC_BTN2, KC_BTN1, KC_BTN3, KC_BTN1
+                      DRGSCRL, PTR_L_THUMB, KC_BTN1, KC_BTN3, TO(LAYER_BASE)
 
 // Need to keep the convenience macros for POINTER layer to work or redefine them
 #define ______________HOME_ROW_GACS_L______________ KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX
@@ -256,6 +284,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 case SNIPING:
                 case DPI_MOD:
                 case S_D_MOD:
+                case TD(TD_PTR_L_THUMB):
                     is_mouse_key = true;
                     break;
             }
